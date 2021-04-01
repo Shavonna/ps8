@@ -9,10 +9,10 @@ open Config ;;
 
 (* sum_float float_list -- Returns the sum of the elements in the
    `float_list`. *)
-let sum_float = List.fold_left (+.) 0. ;;
+let sum_float : float list -> float = List.fold_left (+.) 0. ;;
 
 (* sum_int int_list -- Similarly for `int`s. *)
-let sum_int = List.fold_left (+) 0 ;;
+let sum_int : int list -> int = List.fold_left (+) 0 ;;
 
 (* bounded n min max -- Returns `n` (or thereabouts), but clipped
    between `min` (inclusive) and `max` (exclusive) *)
@@ -56,7 +56,7 @@ let rand_step (x : int) (y : int) (step_size : int) : int * int =
       - : (int * bool) list =
       [(3, false); (3, true); (2, false); (2, true); (1, false); (1, true)]
  *)
-let cross_product l1 l2 =
+let cross_product (l1 : 'a list) (l2 : 'b list) : ('a * 'b) list =
   l1
   |> List.fold_left
        (fun acc1 ele1 -> l2

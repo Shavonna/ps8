@@ -11,7 +11,7 @@ Allows for storing a set of objects allowing for
 -- obtaining a list of all currently registered objects within a
    certain distance from a given object.
 
-Stores the registerd objects in two data structures, a `Set` for easy
+Stores the registered objects in two data structures, a `Set` for easy
 access to the full set of objects and a 2D array by location allowing
 for more efficient access to the neighboring objects. *)
 
@@ -21,7 +21,7 @@ module G = Graphics ;;
 
 open Config ;;
 module Viz = Visualization ;;
-(* also uses Utilities *)
+module Utilities = Utilities ;; 
   
 (*....................................................................
   The objects in the world
@@ -68,7 +68,7 @@ module type REGISTRY =
 
 module Registry : REGISTRY =
   struct
-    (* registrants -- A set of all of the registered objects *)
+    (* registrants -- An updatable set of all of the registered objects *)
     module Registrants =
       Set.Make (struct type t = thing_type
                        let compare = compare

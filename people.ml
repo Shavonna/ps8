@@ -11,7 +11,7 @@ open Registry ;;
 module Ctr = Counter ;;
 module Viz = Visualization ;;
 module Stat = Statistics ;; 
-(* also uses Utilities *)
+module Utilities = Utilities ;; 
 
 (*....................................................................
                                 People
@@ -66,7 +66,7 @@ class person (initx : int) (inity : int)
 
   Note that since these classes refer to each other, they must be
   simultaneously defined using `and` instead of sequentially defined
-  as separate classes.  
+  as separate classes.
  *)
   
 class susceptible (initx : int) (inity : int) =
@@ -82,14 +82,14 @@ class susceptible (initx : int) (inity : int) =
     method! update =
       super#update;
       let posx, posy = self#pos in
+      (* calculate total infectiousness of all neighbors *)
       let infectiousness_total =
-        (* calculate total infectiousness of all neighbors *)
         Utilities.sum_float
 	  (List.map (fun obj -> obj#infectiousness)
                     (Registry.neighbors (self :> thing_type))) in
+      (* if infected, update the registry by replacing this object
+         with an infected one *)
       if Utilities.flip_coin infectiousness_total then
-        (* infected, so update the registry by replacing this object
-           with an infected one *)
         begin
           Stat.susceptible#debump;
           Registry.deregister (self :> thing_type);

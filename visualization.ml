@@ -8,7 +8,7 @@
 open Config ;;
 module Stat = Statistics ;;
 module G = Graphics ;;
-(* also uses Utilities *)
+module Utilities = Utilities ;;
   
 (*....................................................................
   Timing functions 
@@ -95,7 +95,7 @@ let render_map objects =
    element containing counts for the different statuses, along with a
    list of `colors`, again one for each status, in the same order. The
    chart is placed with lower left at `x, y` and the given `width` and
-   `height`.*)
+   `height`, all in pixels. *)
 let render_chart (data : int list list) (colors : G.color list)
                  lowleft_x lowleft_y width height =
   let open List in
@@ -107,24 +107,28 @@ let render_chart (data : int list list) (colors : G.color list)
      `colors` *)
   let draw_stack time values colors =
     assert (length values = length colors);
-    let total = Utilities.sum_int values in
     let left_edge = lowleft_x
                     + time * width / cTIME_STEPS in
-    
-    let rec draw_bars values colors left_off =
-      match values, colors with
-      | [], [] -> ()
-      | [], _ :: _
-      | _ :: _, [] -> failwith "bars don't match colors"
-      | value :: values, color :: colors ->
-         G.set_color color;
-         G.moveto left_edge left_off;
-         let x, y = G.current_point () in
-         let bar_height = height * value / total in
-         G.fill_rect x y 1 bar_height;
-         draw_bars values colors (left_off + bar_height) in
-               
-    draw_bars values colors lowleft_y in
+
+    (* calculate total and (reversed) partial sums, e.g.,
+       [3; 5; 9; 1] --> (18, [18; 17; 8; 3]) *)
+    let partial_sums =
+      List.fold_left (fun (so_far, splits) next ->
+                      (so_far + next), (so_far + next) :: splits)
+                     (0, []) in
+    let total, splits = partial_sums values in
+    (* convert split points to pixels from highest to lowest *)
+    let splits = List.map
+                   (fun sum -> sum * height / total)
+                   splits in
+    (* draw bars in reverse order from highest to lowest *)
+    List.iter2 (fun split color ->
+                  G.set_color color;
+                  G.moveto left_edge lowleft_y ;
+                  let x, y = G.current_point () in
+                  G.fill_rect x y 1 split)
+               splits
+               (List.rev colors) in
 
   data |> List.iteri (fun time stack -> draw_stack time stack colors) ;;
 
