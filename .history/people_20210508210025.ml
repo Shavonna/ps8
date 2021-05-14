@@ -123,10 +123,9 @@ and (* class *) infected (initx : int) (inity : int) =
       super#update;
       if count_time#count <= 0 then 
       begin
-        let a = if Stat.infected#count >= 100 then cMORTALITY *. 5.
-        else cMORTALITY in 
+        if Stat.infected#count >= 50 then cMORTALITY *. 3.
         begin
-          if Utilities.flip_coin a then
+          if Utilities.flip_coin cMORTALITY then
               begin
                 Stat.infected#debump;
                 Registry.deregister (self :> thing_type);
@@ -138,7 +137,6 @@ and (* class *) infected (initx : int) (inity : int) =
                 Registry.deregister (self :> thing_type);
                 Registry.register ((new recovered posx posy) :> thing_type)
             end
-        end
       end
       else
        count_time#debump;
@@ -168,16 +166,8 @@ and (* class *) infected (initx : int) (inity : int) =
 
     initializer
       Stat.recovered#bump;
-      let better_immune_system_rate = 0.25 in
-      if Utilities.flip_coin better_immune_system_rate then
-          let time_immune= int_of_float (Utilities.gaussian (fst cIMMUNITY_PERIOD) (snd cIMMUNITY_PERIOD)) in
-      immunity_time#set (time_immune*5)
-          else
-          let time_immune= int_of_float (Utilities.gaussian (fst cIMMUNITY_PERIOD) (snd cIMMUNITY_PERIOD)) in
+      let time_immune= int_of_float (Utilities.gaussian (fst cIMMUNITY_PERIOD) (snd cIMMUNITY_PERIOD)) in
       immunity_time#set time_immune
-
-    (* let time_immune= int_of_float (Utilities.gaussian (fst cIMMUNITY_PERIOD) (snd cIMMUNITY_PERIOD)) in
-      immunity_time#set time_immune *)
 
     method! update =
     immunity_time#debump;
@@ -199,7 +189,7 @@ and (* class *) infected (initx : int) (inity : int) =
     inherit person initx inity
                    cSTEP_SIZE_DECEASED
                    cINFECTIOUSNESS_DECEASED
-              
+              as super
 
    
     initializer

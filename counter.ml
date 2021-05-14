@@ -23,7 +23,20 @@ class type counter_type =
 Place your implementation of the `counter` class of class type
 `counter_type` here.
 ....................................................................*)
+class counter :counter_type= 
+  object 
+    val mutable count = 0
 
+    method set n = count <- n
+
+    method reset = count <- 0
+
+    method bump = count <- count + 1
+
+    method debump = count <- count - 1
+    
+    method count = count 
+  end ;;
    
 (*======================================================================
 Reflection on the problem set

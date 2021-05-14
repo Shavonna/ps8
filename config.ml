@@ -15,6 +15,9 @@ module G = Graphics ;;
 let cX_DIMENSION = 200 ;;
 let cY_DIMENSION = 200 ;;
 
+let quarantinex = cX_DIMENSION/2 ;;
+let quarantiney = cY_DIMENSION/2 ;;
+
 (* number of time steps that the simulation runs *)
 let cTIME_STEPS = 1000 ;;
 let cPAUSE_EVERY = max_int ;;
@@ -30,6 +33,7 @@ let cSTEP_SIZE_SUSCEPTIBLE = 1 ;;
 let cSTEP_SIZE_INFECTED = cSTEP_SIZE_SUSCEPTIBLE ;;
 let cSTEP_SIZE_RECOVERED = cSTEP_SIZE_SUSCEPTIBLE ;;
 let cSTEP_SIZE_DECEASED = 0 ;; (* should be 0, unless...*zombies*! *)
+let cSTEP_SIZE_QUARANTINED = 0 ;; 
 
 (* the incremental probability that being within the neighbor radius
    of a person will cause infection *)
@@ -37,7 +41,8 @@ let cINFECTIOUSNESS_SUSCEPTIBLE = 0.0 ;;
 let cINFECTIOUSNESS_INFECTED = 0.2 ;;
 let cINFECTIOUSNESS_RECOVERED = 0.0 ;;
 let cINFECTIOUSNESS_DECEASED = 0.0 ;; (* again, ...*zombies*! *)
-      
+let cINFECTIOUSNESS_QUARANTINED = 0 ;; 
+
 (* distance in blocks that an infected person can infect others *)
 let cNEIGHBOR_RADIUS = 4 ;;
 (* proportion of infected that die on any given time step *)
@@ -46,6 +51,8 @@ let cMORTALITY = 2. /. 100. ;;
 let cRECOVERY_PERIOD = 50., 20. ;;
 (* mean and stdev of time steps during which recovered are immune *)
 let cIMMUNITY_PERIOD = 100., 40. ;;
+
+let cQUARANTINED = 0.1 ;;
 
 (*....................................................................
                    Parameters of the visualization
@@ -68,6 +75,8 @@ let cCOLOR_SUSCEPTIBLE = 0x5888c4 ;;
 let cCOLOR_INFECTED = 0xc4586f ;;
 let cCOLOR_RECOVERED = 0x686061 ;;
 let cCOLOR_DECEASED = 0xc1bab8 ;;
+let cCOLOR_QUARANTINED = 0x686088 ;;
+
 
 (* chart placement in pixels *)
 let cCHART_X = 50
